@@ -1,0 +1,56 @@
+
+<head>
+    <meta charset="UTF-8">
+    <title>Information</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h3>Your Fighter</h3> <br/>
+    {% if model.name != '' %}
+        Name: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; {{ model.name }}; <br/>
+        Number of Estimators: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; {{ model.num }}; <br/>
+        Feature Dimension for Base Model: &nbsp; {{ model.dim}}; <br/>
+        Max Depth: &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp; {{ model.depth }};
+        {%if model.name == "gb" %}
+        <br/>
+        Learning Rate: &nbsp;&nbsp; {{ model.lr }};
+        {% endif %}
+    {% else %}
+        No model found
+    {% endif %}
+</div>
+
+<div class="container">
+    <h3>Chosen Datasets</h3> <br/>
+    <form method="post" class="form" role="form" action="{{url_for('get_info')}}">
+        {{ data_form.hidden_tag() }}
+        Train Dataset:
+        {% if flag_form.is_ready_train == True %}
+            {{ data.train_name }} &emsp;&emsp;
+        {% else %}
+            no file was found &emsp;&emsp;
+        {% endif %}
+        Test Dataset:
+        {% if flag_form.is_ready_test == True %}
+            {{ data.test_name }} &emsp;&emsp;
+        {% else %}
+            no file was found &emsp;&emsp;
+        {% endif %}
+        <br/><br/>
+        {{ wtf.form_field(data_form.train) }} &emsp;&emsp;&emsp;&emsp;&emsp; {{ wtf.form_field(data_form.test) }}
+    </form>
+
+    <hr width="37%" align="left">
+    {{ wtf.quick_form(return_form) }}
+</div>
+
+{% endblock %}
+
+</body>

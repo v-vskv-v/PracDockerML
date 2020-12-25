@@ -1,0 +1,18 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Successful Uploading!</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h3>{{form.text}}</h3>
+    {{ wtf.quick_form(form) }}
+</div>
+
+
+
+{% endblock %}

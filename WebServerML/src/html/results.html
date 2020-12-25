@@ -1,0 +1,79 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Results of fitting and predicting</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% if global_flags.training_in_process == True %}
+        <h2 style="text-align:center"><b>The fighter is on training, wait for results...</b></h2> <br/><br/>
+    {% elif global_flags.testing_in_process == True %}
+        <h2 style="text-align:center"><b>The fighter is fighting, wait for results...</b></h2> <br/><br/>
+    {% else %}
+        {% if global_flags.is_recently_trained == False and global_flags.is_recently_tested == False %}
+            <h2 style="text-align:center"><b>There aren't any action from your fighter...</b></h2>
+        {% elif global_flags.is_recently_trained == True and global_flags.is_recently_tested == False %}
+            <h2 style="text-align:center"><b>Your fighter has done a good job while training and is ready for battle</b></h2>
+        {% else %}
+            <h2 style="text-align:center"><b>It's time to take stock</b></h2>
+        {% endif %}
+    <br/>
+    {% endif %}
+</head>
+
+<body>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if global_flags.training_in_process == True or global_flags.testing_in_process == True %}
+        <div class="bd-example" align="middle">
+            <img src="{{url_for('static', filename='res_wait.png')}}", align="center" />
+            <br/><br/>
+            <form action method="post" class="form" role="form" enctype="multipart/form-data">
+                {{ wtf.form_field(reset_form.submit) }}
+            </form>
+        </div>
+    {% else %}
+        {% if global_flags.is_recently_trained == False and global_flags.is_recently_tested == False %}
+            <div class="container">
+                <big>Wait for it</big><br/><br/>
+                <form action method="post" class="form" role="form" enctype="multipart/form-data">
+                    {{ wtf.form_field(reset_form.submit) }}
+                </form>
+            </div>
+        {% elif global_flags.is_recently_trained == True and global_flags.is_recently_tested == False %}
+            <div class="container" align="left">
+                <img src="data:image/png;base64,{{ plot_url }}" alt="Train Loss" height="auto" width="100%">
+                <form action method="post" class="form" role="form" enctype="multipart/form-data">
+                    {{ wtf.form_field(result_form.train_loss) }}
+                    {{ wtf.form_field(result_form.download_plot) }} &nbsp;
+                    {{ wtf.form_field(result_form.download_info) }} &nbsp;
+                    {{ wtf.form_field(result_form.download_train) }} <br/>
+                </form>
+            </div>
+            <hr width="30%" align="center">
+            <div class="container" align="center">
+                {{ wtf.quick_form(reset_form) }}
+            </div>
+        {% else %}
+            <div class="container" align="left">
+                <img src="data:image/png;base64,{{ plot_url }}" alt="Train Loss" height="auto" width="100%">
+                <form action method="post" class="form" role="form" enctype="multipart/form-data">
+                    {{ wtf.form_field(result_form.test_loss) }}
+                    {{ wtf.form_field(result_form.train_loss) }}
+                    {{ wtf.form_field(result_form.download_plot) }} &nbsp;
+                    {{ wtf.form_field(result_form.download_info) }} &nbsp;
+                    {{ wtf.form_field(result_form.download_pred) }} &nbsp;
+                    {{ wtf.form_field(result_form.download_train) }} &nbsp;
+                    {{ wtf.form_field(result_form.download_test) }} <br/>
+                </form>
+            </div>
+            <hr width="30%" align="center">
+            <div class="container" align="center">
+                {{ wtf.quick_form(reset_form) }}
+            </div>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+</body>

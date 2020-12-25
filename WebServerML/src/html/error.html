@@ -1,0 +1,18 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Oops, your datasets aren't valid</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h3>Change your dataset, previous ({{problem}}) will be deleted</h3>
+    {{ wtf.quick_form(form) }}
+</div>
+
+
+
+{% endblock %}

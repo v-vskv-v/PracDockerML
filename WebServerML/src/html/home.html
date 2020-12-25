@@ -1,0 +1,67 @@
+
+<head>
+    <meta charset="UTF-8">
+    <title>Main page</title>
+    <h1 style="text-align:center"><b>The solution of regression problems using compositional models</b></h1>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3 style="text-align:center">Choose your fighter (model)</h3> <br/>
+<div class="container">
+    {% if select_form.key == "gb" %}
+        <big>Gradient Boosting</big><br/><br/>
+    {% elif select_form.key == "rf" %}
+        <big>Random Forest</big><br/><br/>
+    {% endif %}
+
+    {{ wtf.quick_form(select_form) }}
+</div>
+
+<h3 style="text-align:center">Upload your datasets</h3> <br/>
+
+<div class="container">
+    <form action method="post" class="form" role="form" enctype="multipart/form-data"> <!--  style="float:left;" -->
+        {{ upload_train_form.hidden_tag() }}
+        {{ wtf.form_field(upload_train_form.train_file) }}
+        {% if flag_form.is_ready_train == False %}
+            {{ wtf.form_field(upload_train_form.submit_train) }} &nbsp; {{ wtf.form_field(upload_train_form.ex_train) }} <br/><br/>
+        {% elif flag_form.is_ready_model == False %}
+            {{ wtf.form_field(upload_train_form.submit_train) }} &nbsp;
+            {{ wtf.form_field(upload_train_form.ex_train) }} &nbsp; {{ wtf.form_field(upload_train_form.delete_train ) }} <br/><br/>
+        {% else %}
+            {{ wtf.form_field(flag_form.ready_train) }} &nbsp; {{ wtf.form_field(upload_train_form.submit_train) }} &nbsp;
+            {{ wtf.form_field(upload_train_form.ex_train) }} &nbsp; {{ wtf.form_field(upload_train_form.delete_train ) }} <br/><br/>
+        {% endif %}
+    </form>
+    <form action method="post" class="form" role="form" enctype="multipart/form-data"> <!-- style="float:right;text-align:right;margin-left: 80px;" -->
+        {{ upload_test_form.hidden_tag() }}
+        {{ wtf.form_field(upload_test_form.test_file) }}
+        {% if flag_form.is_ready_test == False %}
+            {{ wtf.form_field(upload_test_form.submit_test) }}  &nbsp; {{ wtf.form_field(upload_test_form.ex_test) }} <br/>
+        {% elif flag_form.is_ready_model == False or flag_form.is_trained == False or signes.is_recently_trained == False %}
+            {{ wtf.form_field(upload_test_form.submit_test) }}  &nbsp;
+            {{ wtf.form_field(upload_test_form.ex_test) }} &nbsp; {{ wtf.form_field(upload_test_form.delete_test) }} <br/>
+        {% else %}
+            {{ wtf.form_field(flag_form.ready_test) }} &nbsp; {{ wtf.form_field(upload_test_form.submit_test) }}  &nbsp;
+            {{ wtf.form_field(upload_test_form.ex_test) }} &nbsp; {{ wtf.form_field(upload_test_form.delete_test) }} <br/>
+        {% endif %}
+    </form>
+</div>
+
+{% if flag_form.is_ready_any == True %}
+    <hr width="8%" align="center">
+    <div class="container" align="center" action="{{ url_for('get_info') }}">
+        {{ wtf.quick_form(info_form) }}
+    </div>
+{% endif %}
+
+
+
+{% endblock %}
+
+</body>
