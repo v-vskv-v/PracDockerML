@@ -125,6 +125,8 @@ class GradientBoostingMSE:
         train_loss = []
         test_loss = []
         y_pred = np.zeros(X.shape[0])
+        if X_val is not None:
+            y_pred_val = np.zeros(X_val.shape[0])
         if self.feature_subsample_size is None:
             self.feature_subsample_size = np.ceil(X.shape[1] / 3).astype(np.int_)
         for _ in range(self.n_estimators):
@@ -138,7 +140,7 @@ class GradientBoostingMSE:
             y_pred += self.learning_rate * self.coefs[-1] * prediction
             train_loss.append(root_mean_squared_error(y, y_pred))
             if X_val is not None:
-                y_pred_val = self.predict(X_val)
+                y_pred_val += self.learning_rate * self.coefs[-1] * self.estimators[-1].predict(X_val) 
                 test_loss.append(root_mean_squared_error(y_val, y_pred_val))
         return self, train_loss, test_loss
 
